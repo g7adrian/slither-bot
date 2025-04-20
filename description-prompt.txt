@@ -1,0 +1,51 @@
+<context>
+I would like to build a game similar to slither.io in Python, for the purpose of learning and testing AI agent machine learning algorithms. I have a PhD in machine learning, but I do not have expertise in reinforcement learning, and it would be nice to learn some concepts by playing with this game and making the AI snakes smart. Also, I own a new computer powered by a Core i9 processor, and RTX 5090 GPU, with 128 GB RAM, and I would like to really use the power of this computer in this project.
+</context>
+
+<game description>
+In this version of slither.io I would like to build the following game mechanics:
+* The world is a very large square. Inside the square there is a grid pattern, to indicate movement.
+* The world is filled with food, randomply placed at x, y coordinates. There is quite a bit of food density, and food also randomly spanws. Each food has a weight of 1. "Weight" is produced when food randomly spawns, or snakes randomply spawn. "Weight" is destroyed when a snake hits the end of the world and dies. Otherwise, "weight" is conserved.
+* The world also has snakes. Snakes are controlled either by the player, or by AI, with various AI algorithms being tested. The world may have hundreds of snakes. Snakes can die, and new snakes can also spawn randomly. There is a maximum number of snakes in the world -- once the number of snakes reaches that number, no more snakes randomly spawn.
+
+<snake weight calculation>
+* When a snakes spawns, it spawns with a weight of "1".
+* Each snake is made up of slightly overlapping disk segments. So other than "weight", the snake also has a "length" (number of segments) and "radius" (the radius of one segment).
+* There is a direct relationship between "weight", "length" and "radius" for each snake. "weight" maps to ("length", "radius") uniquely. I.e. if you know "weight", you can derive the other two. "weight" and "radius" are positive real numbers, whereas "length" is a positive integer.
+* "lenght" and "radius" increase monotonically as a function of "weight"
+* "weight" >= "length" * "area of one segment" and "weight" < ("length" + 1) * "area of one segment".
+* In other words, the total area of the snake (length time area of 1 segment) approximates "weight".
+</snake weight calculation>
+
+<snake movement>
+Snakes have a moving direction, and a speed. They always move in the moving direction. The speed is one of two: "normal speed", or "boost speed". "direction" can be any degree between 0 and 360, represented as a real number.
+When the snake eats food, it grows in weight. If a new segment needs to get added, it is added at the head. The tail does not grow backwards.
+</snake movement>
+
+<food movement>
+Food can move following Newtonian physics. Here is the model being used:
+* each food piece has friction. If nothing else attracts the food, the food quickly starts moving.
+* snake heads attract the food, but only if the food is within 5x radius of the center of the head. Within this radius, the force exerted by the head is computed by a formula similar to the gravitational formula, proportional to the mass of the food (1) and the mass of the head (the area of the head).
+* the force should be such that when the head is moving at "boost speed", food within 5x radius cannot escape, and eventually is attracted and meets the head.
+* if multiple heads are within 5x radius of the food, the force vectors add up like in real physics.
+</food movement>
+
+<collisions>
+* if food gets closer to the center of a head than the radius of the snake, the food gets eaten, and it dissapears. The weight of the snake becomes larger by exactly the weight of the food eaten.
+* If the head of a snake gets closer to a non-head segment by the sum of the two radii, the snake dies.
+* If two snake heads get closer to each other than the sum of the radii, the smaller snake dies. If the heads have the exact same radius, a coin toss decides who dies.
+* If the head of the snake gets closer to the border of the world than its radius, it dies.
+</collisions>
+
+<special food>
+When a snake dies due to colliding with another snake, it is replaced by "special food". Special food is centered at each former snake segment, and it has a weight equal to the area of that segment. It has a different color, and it is larger in radius than normal food. Otherwise, it moves the same as normal food.
+If the snake dies by exiting the boundary of the world, there is no special food generated.
+</special food>
+
+<snake controls>
+Each snake responds to the following controls:
+* a "boost" control. While "boost" is active the snake moves at "boost speed". Otherwise, it moves at "normal speed".
+* a mouse position control. 
+</snake controls>
+
+</game description>
