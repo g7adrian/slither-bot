@@ -7,6 +7,7 @@ In this version of slither.io I would like to build the following game mechanics
 * The world is a very large square. Inside the square there is a grid pattern, to indicate movement.
 * The world is filled with food, randomply placed at x, y coordinates. There is quite a bit of food density, and food also randomly spanws. Each food has a weight of 1. "Weight" is produced when food randomly spawns, or snakes randomply spawn. "Weight" is destroyed when a snake hits the end of the world and dies. Otherwise, "weight" is conserved.
 * The world also has snakes. Snakes are controlled either by the player, or by AI, with various AI algorithms being tested. The world may have hundreds of snakes. Snakes can die, and new snakes can also spawn randomly. There is a maximum number of snakes in the world -- once the number of snakes reaches that number, no more snakes randomly spawn.
+* Scale wise, the word should support a few 100k of food, hundreds of snakes, and each snake with a number of segments from 1 to a few thousands.
 
 <snake weight calculation>
 * When a snakes spawns, it spawns with a weight of "1".
@@ -35,6 +36,7 @@ Food can move following Newtonian physics. Here is the model being used:
 * If the head of a snake gets closer to a non-head segment by the sum of the two radii, the snake dies.
 * If two snake heads get closer to each other than the sum of the radii, the smaller snake dies. If the heads have the exact same radius, a coin toss decides who dies.
 * If the head of the snake gets closer to the border of the world than its radius, it dies.
+* A snake cannot collide with its own segments.
 </collisions>
 
 <special food>
@@ -42,10 +44,30 @@ When a snake dies due to colliding with another snake, it is replaced by "specia
 If the snake dies by exiting the boundary of the world, there is no special food generated.
 </special food>
 
+<snake behavior>
+Each snake sense its environment, and it can also act with a few controls.
+From the point of the snake, the world is a N x N square around the head of the snake (N is configurable). The snake sees everything in this N x N square -- any food, other snake segments (including its own), or the rim of the world -- but does not see anything outside this N x N square.
+
 <snake controls>
-Each snake responds to the following controls:
-* a "boost" control. While "boost" is active the snake moves at "boost speed". Otherwise, it moves at "normal speed".
-* a mouse position control. 
+The snake has a mouse, which is a pointer located in this N x N viewport, and a button.
+* The button controls if the snake moves with "normal speed" or "boost speed". At any point, the snake can press the button to move with boost speed, or depress the button to move with normal speed.
+* The mouse pointer controls the direction of the snake movement. The direction is given by the vector originating at the middle of the N x N viewport, towards the (x, y) coordinate of the mouse pointer.
+* There is a maximum speed at which the mouse pointer can move within the N x N viewport. Therefore the snake can change its direction faster if the mouse pointer is closer to the center of the viewport, and slower if the mouse pointer is towards the edge of the viewport.
+* The mouse pointer cannot move outside the N x N viewport.
 </snake controls>
+</snake behavior>
+
+<human player controls>
+Generally, the human and AI control the snake in the same way, via the mouse pointer in the N x N viewport.
+When the game starts, the human sees the N x N viewport, and as the snake moves, the head of the snake is always at the center of the viewport, and the "world" is moving, evidenced by how the food and other visible snakes are moving, or the grid of the world.
+
+The physical left mouse button is the button that AI snakes also have, controlling boost speed.
+The player is also subject to the same maximum pointer speed. In practice, this means that for the human player there is a physical mouse pointer, controlled by the OS, and a virtual mouse pointer. If the physical mouse is only limited by the constraints of the OS. The virtual mouse pointer always stays in the N X N viewport, and has a limit how fast it can move. The player does not see the virtual mouse pointer, but it is there behind the sceens.
+
+The player has 2 additional controls:
+* rotating the mouse wheel zooms in or out the view. This means that the player can use a larger viewport than the AI. This also affects the position of the mouse pointer, i.e. the mouse can move further if N is larger.
+* clicking on the right mouse button switches between manual player control, or AI control.
+</human player controls>
 
 </game description>
+
