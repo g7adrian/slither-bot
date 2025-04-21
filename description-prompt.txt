@@ -71,3 +71,16 @@ The player has 2 additional controls:
 
 </game description>
 
+<task>
+You are to write a design doc for implementing this game, that is sufficiently detailed for an LLM model to implement it. Part of this task is to research and recommend appropriate technologies.
+
+Requirements:
+* implemented in Python
+* game should run smoothly on a Core i9 / RTX 5090 / 128 GB RAM in Linux
+* optimizations such as Numba to take advantage of Core i9 multi-threading and AVX-512
+* modular implementation, with clear testable interfaces
+* the key elements of the algorithm should be unit tested. For example, collision algorithm, game mechanics, the function that maps weight to length and radius.
+* The game should allow different implementations of the AI snake controller. The initial version should come with a hard-coded basic behavior of AI snakes
+* The AI controller should be expandable to using a neural network via ONNX / PyTorch, run on the CPU first.
+* The design should allow running the world in batch mode (without rendering) on the GPU for reinforcement learning training -- run the game many times there to fine tune the neural networks on the GPU with RL. The resulting networks should be usable on via CPU inference, fast enough for the game to run in real time.
+</task
